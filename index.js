@@ -3,13 +3,15 @@ const express = require('express');
 const shell = require('shelljs');
 const path = require('path');
 
+
 const PORT = 3000;
 
 app = express();
 
 const logPath = path.resolve("logs/fms-log.txt");
 
-const cmd = `wget -a ${logPath} http://172.16.14.152/fms`;
+const cmd = `wget -a ${logPath} http://keklf-hrm52.kwtrp.org/fms`;
+const del = `node delete.js`;
 
 
 
@@ -37,7 +39,14 @@ cron.schedule('* * * * *', () => {
     else{
         shell.echo(`KEMRI FMS Synchronization thread completed @ ${datetime}. Hurray...`);
     }
+
+    if(shell.exec(del).code !== 0) {
+        shell.exit(1)
+    }else{
+        shell.echo('Unable to delete log files.');
+    }
 });
+
 
 
 app.listen(PORT);
